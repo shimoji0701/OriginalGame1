@@ -8,6 +8,11 @@ TagManager:
   - Item1
   - Item2
   - Boss
+  - Stege2
+  - Item3
+  - Stage3
+  - Ivent1
+  - BOSS
   layers:
   - Default
   - TransparentFX

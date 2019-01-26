@@ -8,12 +8,13 @@ public class Status : MonoBehaviour {
     float Power ;     //ステータス
     int skil1;
     int skil2;
-    public float Weapon; //初期武器防具
-    public float Armor;
+    public static float  Weapon; //初期武器防具
+    public static float Armor;
     public float BossHP;
     public float BossPower;
     public float EHP = 80;　//敵ステータス
     float EnemyPower;
+    //public static 
     private Animator Eanimator;
     private Animator animator;
     private Animator BosAni;
@@ -33,7 +34,7 @@ public class Status : MonoBehaviour {
         Weapon = 1;
         Armor = 1;
         BossPower = 1;
-        BossHP = 240;
+        BossHP = 265;
         chanCame = GameObject.Find("unitychan").GetComponent<ChangeCamera>();
        
         this.animator = GetComponent<Animator>();
@@ -41,6 +42,8 @@ public class Status : MonoBehaviour {
         this.BattleEnemy = GameObject.Find("BattleEnemy");
         this.comPanel = GameObject.Find("CommandPanel");
         BosAni = GameObject.Find("BattleBoss").GetComponent<Animator>();
+        Debug.Log("Weapon" + Weapon);
+        Debug.Log("Armor" + Armor);
     }
 	
 	// Update is called once per frame
@@ -67,7 +70,9 @@ public class Status : MonoBehaviour {
             GameObject.Find("FadeCanvas").GetComponent<FadeImage>().Range = 0;
             EHP = 80;
             BattleEnemy.SetActive(true);
-            transform.eulerAngles = new Vector3(0, 0f, 0);          
+            transform.eulerAngles = new Vector3(0, 0f, 0);
+            transform.position = new Vector3(-64.5f, 0f, -107.2f);
+            Eanimator.SetTrigger("Rev");
 
         }
         if (HP<31) {
@@ -83,7 +88,15 @@ public class Status : MonoBehaviour {
         GameObject.Find("MessageTextunder").GetComponent<Text>().text = this.Power + "のダメージを与えた";      
         if(Boss == false) {  //通常敵の場合
             EHP -= Power;
-        }else if(Boss == true) {　//ボスの場合
+            if (EHP > 0) {
+                Eanimator.SetTrigger("Damage");
+                Invoke("okure", 0.8f);
+                
+            }else if (EHP <= 0) {
+                Eanimator.SetTrigger("Death");
+            }
+        }
+        else if(Boss == true) {　//ボスの場合
             BossHP -= Power;
             if (BossHP> 0) {   //ボスのHPに応じてのアニメーション
                 BosAni.SetTrigger("Damage");
@@ -94,10 +107,17 @@ public class Status : MonoBehaviour {
         }                    
     }
     public void Skil1() {   //魔法1Flame        
-        this.skil1 = Random.Range(85, 91);
+        this.skil1 = Random.Range(91, 96);
         GameObject.Find("MessageTextunder").GetComponent<Text>().text = this.skil1 + "のダメージを与えた";
         if(Boss == false) {
             EHP -= skil1;
+            if (EHP > 0) {
+                Eanimator.SetTrigger("Damage");
+                Invoke("okure", 0.8f);
+            }
+            else if (EHP <= 0) {
+                Eanimator.SetTrigger("Death");
+            }
         }else if(Boss == true) {
             BossHP -= skil1;
             if (BossHP> 0) {   
@@ -113,6 +133,13 @@ public class Status : MonoBehaviour {
             GameObject.Find("MessageTextunder").GetComponent<Text>().text = this.skil2 + "のダメージを与えた";           
         if (Boss == false){
             EHP -= skil2;
+            if (EHP > 0) {
+                Eanimator.SetTrigger("Damage");
+                Invoke("okure", 0.8f);
+            }
+            else if (EHP <= 0) {
+                Eanimator.SetTrigger("Death");
+            }
         } else if(Boss == true) {　
             BossHP -= skil2;
             if (BossHP> 0) {   
@@ -127,18 +154,20 @@ public class Status : MonoBehaviour {
         if(Boss == false) { 
         if (EHP > 0) { 
         Eanimator.SetBool("Attack", true);
-        Invoke("Call1",1f);
+        Invoke("Call1",0.6f);
         Invoke("Call2", 2f);
         Invoke("Call3", 2.5f);
-            GameObject.Find("MessageText").GetComponent<Text>().text = "スカルの攻撃";
+                GameObject.Find("BattleEnemy").GetComponent<AudioSource>().PlayDelayed(1.3f);
+                GameObject.Find("MessageText").GetComponent<Text>().text = "スカルの攻撃";
             GameObject.Find("MessageTextunder").GetComponent<Text>().text ="";
             this.animator.SetBool("Jump", false);
             this.animator.SetBool("Skil1", false);
             this.animator.SetBool("Skil2", false);
-            Invoke("Damage", 1.5f); 
+                transform.position = new Vector3(-64.5f, 0f, -107.2f);
+                Invoke("Damage", 1.5f); 
         }
         else if(EHP <= 0) {
-            BattleEnemy.SetActive(false);
+           
             GameObject.Find("MessageText").GetComponent<Text>().text = "スカルをたおした";
             GameObject.Find("MessageText").GetComponent<Text>().fontSize = 19;
             GameObject.Find("MessageTextunder").GetComponent<Text>().text = "";
@@ -177,7 +206,7 @@ public class Status : MonoBehaviour {
     }
     void Call1() {
         Eanimator.SetBool("Attack", false);
-        GameObject.Find("BattleEnemy").GetComponent<AudioSource>().PlayDelayed(0.3f);
+        
     }
     void Call2() {
         Eanimator.SetBool("Back", true);
@@ -185,14 +214,15 @@ public class Status : MonoBehaviour {
     void Call3() {
         Eanimator.SetBool("Back", false);
     }
-   
-    
+    void okure() {
+        Eanimator.SetTrigger("damage");
+    }   
     void Move1() {
         BosAni.SetTrigger("Idle");
     }
     void Damage() {
         GetComponent<Battle>().Damage();
-        EnemyPower = Mathf.Round(Random.Range(7, 12) * BossPower * Armor);
+        EnemyPower = Mathf.Round(Random.Range(9, 14) * BossPower * Armor);
         GameObject.Find("MessageTextunder").GetComponent<Text>().text = EnemyPower + "のダメージを受けた";
         Debug.Log(EnemyPower + "のダメージを受けた");       
         HP -= EnemyPower;
@@ -207,5 +237,10 @@ public class Status : MonoBehaviour {
     public void GetMyFieldBottonClick() {
         isFieldButtonClick = true; 
     }
-    
+    public static float getA(){
+		return Weapon;
+	}
+    public static float getB(){
+		return Armor;
+	}
 }

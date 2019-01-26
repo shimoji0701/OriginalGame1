@@ -1,18 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class Battle : MonoBehaviour {
     [SerializeField] private GameObject CommandPanel;
     [SerializeField] private GameObject SkilPanel;
     [SerializeField] private GameObject FlamePanel;
+    [SerializeField] private GameObject TitleButton;
     private bool isAButtonClick = false;
     private bool isSButtonClick = false;
     private bool isBackButtonClick = false;
     private bool isSkilButtonClick = false;
     private bool isSkil2ButtonClick = false;
     private bool isSkilButtonEnter = false;
+    private bool isTitleButtonClick = false;
 
     private AudioSource sound01;
     private AudioSource sound02;
@@ -97,14 +100,16 @@ public class Battle : MonoBehaviour {
             else {
                 Debug.Log("MPがたりません");
             }
-
         }
 
         if (wait == true) {
             this.animator.SetBool("Wait", true);
             Invoke("Call1", 0.1f);
         }
-        
+        if (this.isTitleButtonClick) {
+            SceneManager.LoadScene("taitoru");
+            this.isTitleButtonClick = false;
+        }
     }
    
     public void GetMyAttackBottonClick() {
@@ -129,6 +134,9 @@ public class Battle : MonoBehaviour {
     public void GetMySkil1ButtonExit() {
         this.isSkilButtonEnter = false;
         FlamePanel.SetActive(false);
+    }
+    public void GetMyTitleBottonClick() {
+        this.isTitleButtonClick = true;
     }
     void Call1() {        
         wait = false;
@@ -184,5 +192,9 @@ public class Battle : MonoBehaviour {
         GameObject.Find("BBGM").GetComponent<AudioSource>().enabled = false;
         GameObject.Find("BossBGM").GetComponent<AudioSource>().enabled = false;
         GameObject.Find("GameOverBGM").GetComponent<AudioSource>().Play();
+        Invoke("Title", 6f);
+    }
+    void Title() {
+        TitleButton.SetActive(true);
     }
 }

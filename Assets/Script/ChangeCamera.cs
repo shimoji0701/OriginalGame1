@@ -41,7 +41,7 @@ public class ChangeCamera : MonoBehaviour {
                 fadeout = true;
             }
         }else if(fadein == true && GameObject.Find("FadeCanvas").GetComponent<FadeImage>().Range >= 0) {
-            Invoke("Call1",1.0f);
+            Invoke("Call1",1.5f);
 
         }
         
@@ -62,6 +62,7 @@ void OnTriggerStay(Collider col) {
         //敵(Enemyタグ)に衝突したとき
 		if(col.tag == "Enemy") {
             Invoke("Call15", 1.5f);
+            Invoke("Call2", 2f);
             Invoke("Call3", 3f);
             Debug.Log("敵に衝突");
             controller.enabled = false;
@@ -73,6 +74,7 @@ void OnTriggerStay(Collider col) {
         }
         if(col.tag == "Boss") {
             Invoke("CamerachangeB", 1.5f);
+            Invoke("BGMB", 2f);
             Invoke("Call3", 3f);
             Debug.Log("Bossに衝突");
             controller.enabled = false;
@@ -90,13 +92,16 @@ void OnTriggerStay(Collider col) {
     }
     void Call15() {
          MainCamera.SetActive(false);
-         SubCamera.SetActive(true);     
-        //GameObject.Find("FadeCanvas").GetComponent<FadeImage>().Range -=1f;
-        GameObject.Find("BBGM").GetComponent<AudioSource>().enabled = true;      
+         SubCamera.SetActive(true);              
+    }
+    void Call2() {
+        GameObject.Find("BBGM").GetComponent<AudioSource>().enabled = true;
     }
     void CamerachangeB() {
         MainCamera.SetActive(false);
-        BossCamera.SetActive(true);
+        BossCamera.SetActive(true);    
+    }
+    void BGMB() {
         GameObject.Find("BossBGM").GetComponent<AudioSource>().enabled = true;
     }
     void Call1() {

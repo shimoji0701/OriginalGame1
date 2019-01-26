@@ -8,7 +8,8 @@ public class CCtest : MonoBehaviour {
     float moveZ = 0f;
     private CharacterController controller;
     private Animator animator;
-
+    private bool isRButtonDown = false;
+    Touch touch;
     // Use this for initialization
     void Start(){
             controller = GetComponent<CharacterController>();
@@ -16,13 +17,29 @@ public class CCtest : MonoBehaviour {
     }
  
         void Update() {
-        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
+        Debug.Log(isRButtonDown);
+        //Touch myTouch = Input.GetTouch(0);
+
+        Touch[] myTouches = Input.touches;
+        for(int i = 0; i < Input.touchCount; i++)
+        {
+            float x = touch.deltaPosition.x;
+            float y = touch.deltaPosition.y;
+            Vector2 direction = new Vector2(x, y);
+            if (Input.touches[i].phase == TouchPhase.Began) {
+                //touch.position
+            }
+        }
+        
+
+        if (Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.RightArrow) || this.isRButtonDown || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.DownArrow))
         {
             if (Input.GetKey(KeyCode.LeftArrow)) {
                 this.transform.rotation = Quaternion.Euler(0.0f, -90.0f, 0.0f);
             }
-            if (Input.GetKey(KeyCode.RightArrow)) {
+            if (Input.GetKey(KeyCode.RightArrow) || this.isRButtonDown) {
                 this.transform.rotation = Quaternion.Euler(0.0f, 90.0f, 0.0f);
+
             }
             if (Input.GetKey(KeyCode.UpArrow)) {
                 this.transform.rotation = Quaternion.Euler(0.0f, 0.0f, 0.0f);
@@ -42,5 +59,13 @@ public class CCtest : MonoBehaviour {
         {
             this.animator.SetBool("WalkBool", false);
         }
+        
+    }
+    public void GetMyRightButtonDown() {
+        this.isRButtonDown = true;
+    }
+    //右ボタンを離した場合
+    public void GetNyRightButtonUp() {
+        this.isRButtonDown = false;
     }
 }

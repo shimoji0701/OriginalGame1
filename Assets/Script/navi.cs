@@ -45,13 +45,13 @@ public class navi : MonoBehaviour {
 		if(col.tag == "Player") {
             agent.SetDestination(target.position);
             agent.speed = 5;
-            this.animator.SetBool("WalkBool", true);
+            this.animator.SetBool("RunBool", true);
         }           
         
     }
     void OnTriggerExit(Collider col) {
 	if(col.tag == "Player") {
-            this.animator.SetBool("WalkBool", false);
+            this.animator.SetBool("RunBool", false);
         }
     }
     }
